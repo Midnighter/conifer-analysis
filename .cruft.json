@@ -1,0 +1,23 @@
+{
+  "template": "https://github.com/opencobra/cookiecutter-python-package",
+  "commit": "d1d61a373e01795cb31d7a6544efc3dc72f9b7cd",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "full_name": "Moritz E. Beber",
+      "email": "moritz@unseenbio.com",
+      "github_username": "Midnighter",
+      "project_name": "Conifer Analysis",
+      "project_slug": "conifer-analysis",
+      "project_module": "conifer_analysis",
+      "project_short_description": "Post-process conifer output for downstream statistical analysis.",
+      "release_date": "2022-03-04",
+      "year": "2022",
+      "_extensions": [
+        "jinja2_time.TimeExtension"
+      ],
+      "_template": "https://github.com/opencobra/cookiecutter-python-package"
+    }
+  },
+  "directory": null
+}
