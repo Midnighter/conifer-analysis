@@ -23,9 +23,10 @@ from .extract import extract_tsv
 from .transform import bin_confidence, tidy_conifer
 
 
-def confidence_hist(
-    path: str, bins: np.ndarray = np.linspace(0, 1, 51)
-) -> pd.DataFrame:
+DEFAULT_BINS = np.linspace(0, 1, 51)
+
+
+def confidence_hist(path: str, bins: np.ndarray = DEFAULT_BINS) -> pd.DataFrame:
     """Compute confidence value bins per path and taxa and return a data frame."""
     return (
         extract_tsv(path)
