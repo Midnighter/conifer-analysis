@@ -38,48 +38,55 @@ Conifer Analysis
 
 Post-process conifer output for downstream statistical analysis.
 
-Post Template-Instantiation Steps
-=================================
+``conifer-analysis`` uses `dask <https://dask.org/>`_ in order to analyze
+`conifer <https://github.com/Ivarz/Conifer>`_ results in a distributed and
+out-of-memory fashion. This can be helpful when processing many such results.
 
-1. Start working with git.
+Example
+=======
 
-   .. code-block:: console
+Say that you have a bunch of ``conifer`` results in a directory. You can
+generate a histogram of the confidence values per file (sample) and per taxa
+using the provided pipeline ``confidence_hist``. Even when you work locally, it
+can be helpful to explicitly create a distributed client controlling the number
+of workers.
 
-       git init
+.. code-block:: python
 
-2. Check for an updated versioneer.
+    from dask.distributed import Client
+    from conifer_analysis import confidence_hist
 
-   .. code-block:: console
+    client = Client(n_workers=8)
 
-       pip install versioneer
-       versioneer install
+You can then visit the `default dashboard <http://127.0.0.1:8787/status>`_ in
+your browser to observe tasks live.  Next, we run the pipeline which returns a
+``pandas.DataFrame``.
 
-   You probably have to remove the mess in ``src/conifer_analysis/__init__.py``.
+.. code-block:: python
 
-3. Commit all the files.
+    hist = confidence_hist("data/*.tsv")
+    hist.info()
 
-   .. code-block:: console
+As an example of the returned shape:
 
-       git add .
-       git commit
+.. code-block:: console
 
-4. Create a repository on `GitHub <https://github.com/>`_ if you haven't done
-   so yet and link it to `Travis CI <https://travis-ci.org/>`_.
-5. Browse through the architecture decision records (``docs/adr``) if you want
-   to understand details of the package design.
-6. Remove this section from the readme and describe what your package is all
-   about.
-7. When you're ready to make a release, perform the following steps.
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 7700 entries, 0 to 7699
+    Data columns (total 8 columns):
+     #   Column       Non-Null Count  Dtype
+    ---  ------       --------------  -----
+     0   path         7700 non-null   category
+     1   name         7700 non-null   category
+     2   taxonomy_id  7700 non-null   category
+     3   bin          7700 non-null   interval[float64, right]
+     4   midpoints    7700 non-null   float64
+     5   read1_hist   7700 non-null   int64
+     6   read2_hist   7700 non-null   int64
+     7   avg_hist     7700 non-null   int64
+    dtypes: category(3), float64(1), int64(3), interval(1)
+    memory usage: 385.3 KB
 
-   1. On `Travis CI <https://travis-ci.org/>`_ set the secure environment
-      variables ``PYPI_USERNAME``, ``PYPI_PASSWORD``, and ``GITHUB_TOKEN``.
-   2. Tag your latest commit with the desired version and let Travis handle
-      the release.
-
-      .. code-block:: console
-
-          git tag 0.1.0
-          git push origin 0.1.0
 
 Install
 =======
@@ -89,6 +96,13 @@ It's as simple as:
 .. code-block:: console
 
     pip install conifer-analysis
+
+If you want to observe tasks in the dask dashboard, you will need additional
+dependencies.
+
+.. code-block:: console
+
+    pip install conifer-analysis[dashboard]
 
 Copyright
 =========
