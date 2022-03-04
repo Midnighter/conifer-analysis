@@ -13,14 +13,25 @@
 # limitations under the License.
 
 
-"""Create top level imports."""
+"""Provide complete dask ETL pipelines."""
 
 
-__author__ = "Moritz E. Beber"
-__email__ = "midnighter@posteo.net"
+import numpy as np
+import pandas as pd
 
-
-from .helpers import show_versions
 from .extract import extract_tsv
-from .transform import tidy_conifer, bin_confidence
-from .pipeline import confidence_hist
+from .transform import bin_confidence, tidy_conifer
+
+
+def confidence_hist(
+    path: str, bins: np.ndarray = np.linspace(0, 1, 51)
+) -> pd.DataFrame:
+    """Compute confidence value bins per path and taxa and return a data frame."""
+    return (
+        extract_tsv(path)
+        .pipe(tidy_conifer)
+        .pipe(bin_confidence, bins=bins)
+        .compute()
+        .droplevel(-1)
+        .reset_index()
+    )

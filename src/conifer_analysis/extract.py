@@ -13,14 +13,28 @@
 # limitations under the License.
 
 
-"""Create top level imports."""
+"""Provide data extraction functions."""
 
 
-__author__ = "Moritz E. Beber"
-__email__ = "midnighter@posteo.net"
+from dask.dataframe import DataFrame, read_csv
 
 
-from .helpers import show_versions
-from .extract import extract_tsv
-from .transform import tidy_conifer, bin_confidence
-from .pipeline import confidence_hist
+def extract_tsv(path: str) -> DataFrame:
+    """Extract conifer tables in a lazy fashion."""
+    return read_csv(
+        path,
+        blocksize=None,
+        include_path_column=True,
+        sep="\t",
+        header=None,
+        names=[
+            "marker",
+            "identifier",
+            "taxa",
+            "read_lengths",
+            "kraken",
+            "read1_confidence",
+            "read2_confidence",
+            "avg_confidence",
+        ],
+    )
